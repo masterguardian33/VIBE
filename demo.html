@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Vibe Demo</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+  <nav class="nav wrap">
+    <div class="brand">Vibe</div>
+    <a href="/index.html">Home</a>
+  </nav>
+  <main class="wrap card">
+    <h1>Try Vibe</h1>
+    <label>Mode</label>
+    <select id="mode">
+      <option value="parent">Parent</option>
+      <option value="teen">Teen</option>
+      <option value="rephrase">Rephraser</option>
+    </select>
+    <textarea id="input" rows="6" placeholder="What’s the situation?"></textarea>
+    <button id="go">Get Advice</button>
+    <pre id="out" class="out"></pre>
+  </main>
+
+  <script>
+  const out=document.getElementById('out');
+  document.getElementById('go').onclick=async()=>{
+    const mode=document.getElementById('mode').value;
+    const input=document.getElementById('input').value.trim();
+    if(!input){out.textContent='Type a situation.';return;}
+    out.textContent='Thinking…';
+    try{
+      const r=await fetch('/api/vibe',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({mode,input})
+      });
+      out.textContent=JSON.stringify(await r.json(),null,2);
+    }catch(e){
+      out.textContent='Error: '+e;
+    }
+  };
+  </script>
+</body>
+</html>
